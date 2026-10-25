@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   RuralNet visual language
+   Matte black, soft grey, off-white, purple #7c3aed used sparingly.
+   Typography: Playfair Display (editorial headings), Inter (UI/body).
+   The design reads as an engineering/research tool, not a SaaS dashboard.
+--------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  background: #0d0d0d;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  color: #f4f2ee;
+  background: #0d0d0d;
+}
+
+/* Playfair Display for major editorial headings */
+.font-display {
+  font-family: var(--font-playfair), Georgia, serif;
+}
+
+/* Inter SemiBold for important labels/headings */
+.font-label {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+}
+
+.text-muted {
+  color: #9a9a9a;
+}
+
+.accent {
+  color: #7c3aed;
+}
+
+/* Panel = a contained evidence block */
+.panel {
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+}
+
+.panel-flat {
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  border-radius: 0px;
+}
+
+/* Small caps section label */
+.kicker {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8e8e8e;
+}
+
+.kicker::after {
+  content: '';
+  display: inline-block;
+  width: 1.25rem;
+  margin-left: 0.4rem;
+  border-bottom: 1px solid #7c3aed;
+}
+
+/* Dotted leader for label-value rows */
+.value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.src-link {
+  color: #b8b8b8;
+  text-decoration: underline;
+  text-decoration-color: rgba(124, 58, 237, 0.45);
+  text-underline-offset: 3px;
+}
+
+.src-link:hover {
+  color: #ffffff;
+  text-decoration-color: #7c3aed;
+}
+
+/* Focus states and forms */
+input,
+textarea,
+select {
+  outline-offset: 2px;
+}
+
+/* Leaflet container fills its parent and looks native to the theme. */
+.leaflet-container {
+  background: #101010;
+}
+
+.leaflet-bar a,
+.leaflet-bar a:hover {
+  background: #161616;
+  color: #f4f2ee;
+}
+
+.leaflet-touch .leaflet-bar a {
+  width: 28px;
+  height: 28px;
+}
+
+/* ---------------------------------------------------------------------------
+   Print / PDF: only the report area becomes visible.
+--------------------------------------------------------------------------- */
+@media print {
+  html,
+  body {
+    background: #ffffff;
+    color: #111111;
+  }
+  body * {
+    visibility: hidden;
+  }
+  #print-area,
+  #print-area * {
+    visibility: visible;
+  }
+  #print-area {
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+  }
+  .panel {
+    background: #ffffff;
+    border-color: #dddddd;
+  }
+  #print-area .print-hide {
+    display: none !important;
+  }
+}

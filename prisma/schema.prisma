@@ -1,0 +1,173 @@
+// RuralNet database schema.
+// Every research result record traces back to a DataSource.
+// PostgreSQL is used as specified; see README "Database setup".
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Location {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  query       String
+  name        String
+  adminLevel  String
+  parentName  String?
+  state       String?
+  country     String   @default("Nigeria")
+  latitude    Float
+  longitude   Float
+  boundingBox Json?
+  geocoder    String
+  geocoderUrl String?
+  sourceId    String?
+  source      DataSource?          @relation("LocationSource", fields: [sourceId], references: [id])
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  researchRuns ResearchRun[]
+  populations PopulationData[]
+  coverage    CoverageData[]
+  internet    InternetData[]
+  facilities  Facility[]
+  infrastructure DigitalInfrastructure[]
+  assessments ConnectivityAssessment[]
+}
+
+model DataSource {
+  id             String   @id
+  name           String
+  provider       String
+  url            String
+  retrievedAt    DateTime
+  licence        String?
+  scope          String?
+  description    String?
+  locations      Location[]              @relation("LocationSource")
+  populations    PopulationData[]
+  coverage       CoverageData[]
+  internet       InternetData[]
+  fibre          FibreInfrastructure[]
+  electricity    ElectricityInfrastructure[]
+  facilities     Facility[]
+  infrastructure DigitalInfrastructure[]
+}
+
+model PopulationData {
+  id              String       @id @default(cuid())
+  locationId      String
+  location        Location     @relation(fields: [locationId], references: [id])
+  population      Int
+  year            Int
+  geographicLevel String
+  quality         String
+  note            String?
+  sourceId        String?
+  source          DataSource?  @relation(fields: [sourceId], references: [id])
+}
+
+model CoverageData {
+  id         String      @id @default(cuid())
+  locationId String
+  location   Location    @relation(fields: [locationId], references: [id])
+  technology String
+  coveragePct Float?
+  operator   String?
+  quality    String
+  year       Int?
+  sourceId   String?
+  source     DataSource? @relation(fields: [sourceId], references: [id])
+}
+
+model InternetData {
+  id         String      @id @default(cuid())
+  locationId String
+  location   Location    @relation(fields: [locationId], references: [id])
+  metric     String
+  label      String
+  value      Float
+  unit       String?
+  year       Int?
+  scope      String
+  quality    String
+  sourceId   String?
+  source     DataSource? @relation(fields: [sourceId], references: [id])
+}
+
+model FibreInfrastructure {
+  id       String      @id @default(cuid())
+  name     String?
+  geometry Json // GeoJSON Feature or FeatureCollection
+  sourceId String?
+  source   DataSource? @relation(fields: [sourceId], references: [id])
+}
+
+model ElectricityInfrastructure {
+  id        String      @id @default(cuid())
+  name      String?
+  type      String
+  latitude  Float?
+  longitude Float?
+  sourceId  String?
+  source    DataSource? @relation(fields: [sourceId], references: [id])
+}
+
+model Facility {
+  id         String      @id @default(cuid())
+  locationId String
+  location   Location    @relation(fields: [locationId], references: [id])
+  type       String
+  subtype    String?
+  name       String?
+  latitude   Float
+  longitude  Float
+  sourceId   String?
+  source     DataSource? @relation(fields: [sourceId], references: [id])
+}
+
+model DigitalInfrastructure {
+  id         String      @id @default(cuid())
+  locationId String
+  location   Location    @relation(fields: [locationId], references: [id])
+  type       String
+  name       String?
+  latitude   Float?
+  longitude  Float?
+  sourceId   String?
+  source     DataSource? @relation(fields: [sourceId], references: [id])
+}
+
+model ConnectivityAssessment {
+  id            String   @id @default(cuid())
+  locationId    String
+  location      Location @relation(fields: [locationId], references: [id])
+  kind          String // 'gap' | 'priority'
+  category      String
+  title         String
+  concern       String
+  explanation   String
+  evidence      Json
+  severity      String?
+  researchRunId String?
+  createdAt     DateTime @default(now())
+}
+
+model ResearchRun {
+  id               String   @id @default(cuid())
+  locationId       String
+  location         Location @relation(fields: [locationId], references: [id])
+  query            String
+  mode             String
+  status           String
+  startedAt        DateTime @default(now())
+  completedAt      DateTime?
+  scoreJson        Json?
+  completenessPct  Float?
+  providerStatus   Json?
+  errors           Json?
+  reportJson       Json?
+}

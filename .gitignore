@@ -1,0 +1,40 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# next.js
+/.next/
+/out/
+
+# prisma
+/prisma/generated
+
+# typescript incremental builds
+*.tsbuildinfo
+
+# production
+/build
+
+# env
+.env
+.env.local
+.env.*.local
+
+# imported & generated research data (large datasets live elsewhere)
+/data/import/
+/data/generated/
+
+# test
+/coverage
+*.pem
+
+# logs
+*.log
+npm-debug.log*
+
+# editor / os
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
